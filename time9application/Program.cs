@@ -1,12 +1,40 @@
-﻿using time9application.DataAccess.SqLite;
+﻿using Microsoft.EntityFrameworkCore;
+using time9application.DataAccess.SqLite;
 using time9application.Entities;
 
 namespace time9application {
 	internal class Program {
 		static void Main() {
-			int educationId = AddEducation();
-			AddStudents(educationId);
-			WriteEducationsToTerminal();
+			// int educationId = AddEducation();
+			// AddStudents(educationId);
+			// WriteEducationsToTerminal();
+			// ReadAllStudentNames();
+			ReadEducationAndStudents();
+		}
+
+		static void ReadEducationAndStudents() {
+			using SchoolDbContext db = new();
+
+			Education education = db.Education
+				.Include(x => x.Students)
+				.FirstOrDefault(e => e.Name == "Data Science");
+
+			if (education != null) {
+				Console.WriteLine($"Education:\nID: {education.Id}\nName: {education.Name}\n");
+				
+				foreach (Student student in education.Students) {
+                    Console.WriteLine($"Student id: {student.Id}\nName: {student.Name}\n");
+                }
+			}
+		}
+
+		static void ReadAllStudentNames() {
+			using SchoolDbContext db = new();
+			IList<string> studentNames = db.Student.Select(x => x.Name).ToList();
+
+			foreach (string name in studentNames) {
+				Console.WriteLine(name);
+			}
 		}
 
 		static void AddStudents(int id) {
