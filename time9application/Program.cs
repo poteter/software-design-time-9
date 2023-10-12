@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using time9application.DataAccess.SqLite;
 using time9application.Entities;
+using time9application.DatabaseMethods;
 
 namespace time9application {
 	internal class Program {
@@ -12,106 +13,10 @@ namespace time9application {
 			// ReadAllStudentNames();
 			// ReadEducationAndStudents("Data Science");
 			// ReadAllStudentNames();
-			// UpdateStudentChangeName(1, "I Changed This One");
+			// UpdateStudentChangeName(4, "I Changed This One");
+			 ReadAllStudentNames.Read();
+			//DeleteStudent(3);
 			// ReadAllStudentNames();
-			// DeleteStudent(3);
-			ReadAllStudentNames();
-		}
-
-		public static Student? DeleteStudent(int id) {
-			using SchoolDbContext db = new();
-
-			Student? student = db.Student.SingleOrDefault(x => x.Id == id);
-			if (student != null) {
-				db.Remove(student);
-				db.SaveChanges();
-			}
-			return student;
-		}
-
-		public static Student? UpdateStudentChangeName(int id, string name) {
-			using SchoolDbContext db = new();
-			
-			Student? student = db.Student.SingleOrDefault(x => x.Id == id);
-			if (student != null) {
-				student.Name = name;
-				db.Update(student);
-				db.SaveChanges();
-			}
-			return student;
-		}
-
-		static void AddTeacher(int educationId) {
-			List<Teacher> teachers = new() {
-			new() { Name = "Roland", EducationId = educationId },
-			new() { Name = "William", EducationId = educationId },
-			new() { Name = "roti", EducationId = educationId },
-			};
-
-			using SchoolDbContext db = new();
-			db.AddRange(teachers);
-			db.SaveChanges();
-		}
-
-		static void ReadEducationAndStudents(string educationName) {
-			using SchoolDbContext db = new();
-
-			Education education = db.Education
-				.Include(e => e.Students)
-				.Include(e => e.Teachers)
-				.FirstOrDefault(e => e.Name == $"{educationName}");
-
-			if (education != null) {
-				Console.WriteLine($"Education:\nID: {education.Id}\nName: {education.Name}\n");
-                Console.WriteLine("Teacher(s):");
-                foreach (Teacher teacher in education.Teachers) {
-					Console.WriteLine($"Id: {teacher.Id}\nName: {teacher.Name}\n");
-				}
-
-                Console.WriteLine("Student(s):");
-                foreach (Student student in education.Students) {
-                    Console.WriteLine($"\nStudent id: {student.Id}\nName: {student.Name}");
-                }
-			}
-		}
-
-		static void ReadAllStudentNames() {
-			using SchoolDbContext db = new();
-			IList<string> studentNames = db.Student.Select(x => x.Name).ToList();
-
-			foreach (string name in studentNames) {
-				Console.WriteLine(name);
-			}
-		}
-
-		static void AddStudents(int id) {
-			List<Student> students = new() {
-			new() { Name = "wololo", EducationId = id },
-			new() { Name = "woah", EducationId = id },
-			new() { Name = "kaffe", EducationId = id },
-			};
-
-			using SchoolDbContext db = new();
-			db.AddRange(students);
-			db.SaveChanges();
-		}
-
-
-		static int AddEducation() {
-			Education education = new() { Name = "Data Science" };
-			using SchoolDbContext db = new();
-			db.Education.Add(education);
-			db.SaveChanges();
-			return education.Id;
-		}
-
-		static void WriteEducationsToTerminal() {
-			using SchoolDbContext db = new(); 
-
-			IList<Education> educations = db.Education.ToList();
-			foreach (var education in educations) {
-                Console.WriteLine(education);
-            }
 		}
 	}
 }
