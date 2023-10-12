@@ -10,7 +10,35 @@ namespace time9application {
 			// AddTeacher(educationId);
 			// WriteEducationsToTerminal();
 			// ReadAllStudentNames();
-			ReadEducationAndStudents("Data Science");
+			// ReadEducationAndStudents("Data Science");
+			// ReadAllStudentNames();
+			// UpdateStudentChangeName(1, "I Changed This One");
+			// ReadAllStudentNames();
+			// DeleteStudent(3);
+			ReadAllStudentNames();
+		}
+
+		public static Student? DeleteStudent(int id) {
+			using SchoolDbContext db = new();
+
+			Student? student = db.Student.SingleOrDefault(x => x.Id == id);
+			if (student != null) {
+				db.Remove(student);
+				db.SaveChanges();
+			}
+			return student;
+		}
+
+		public static Student? UpdateStudentChangeName(int id, string name) {
+			using SchoolDbContext db = new();
+			
+			Student? student = db.Student.SingleOrDefault(x => x.Id == id);
+			if (student != null) {
+				student.Name = name;
+				db.Update(student);
+				db.SaveChanges();
+			}
+			return student;
 		}
 
 		static void AddTeacher(int educationId) {
@@ -29,8 +57,8 @@ namespace time9application {
 			using SchoolDbContext db = new();
 
 			Education education = db.Education
-				.Include(s => s.Students)
-				.Include(t => t.Teachers)
+				.Include(e => e.Students)
+				.Include(e => e.Teachers)
 				.FirstOrDefault(e => e.Name == $"{educationName}");
 
 			if (education != null) {
