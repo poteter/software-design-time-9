@@ -6,5 +6,14 @@ using System.Threading.Tasks;
 
 namespace time9application.Entities {
 	internal class Student {
+		public int Id { get; set; }
+		public string Name { get; set; } = string.Empty;
+		public int EducationId { get; set; }
+		public Education? Education { get; set; }
+
+		public override string ToString() {
+			return $"Id: {Id}\nName: {Name}";
+		}
+
 	}
 }
