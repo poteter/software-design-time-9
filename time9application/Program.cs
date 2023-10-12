@@ -7,23 +7,42 @@ namespace time9application {
 		static void Main() {
 			// int educationId = AddEducation();
 			// AddStudents(educationId);
+			// AddTeacher(educationId);
 			// WriteEducationsToTerminal();
 			// ReadAllStudentNames();
 			ReadEducationAndStudents("Data Science");
+		}
+
+		static void AddTeacher(int educationId) {
+			List<Teacher> teachers = new() {
+			new() { Name = "Roland", EducationId = educationId },
+			new() { Name = "William", EducationId = educationId },
+			new() { Name = "roti", EducationId = educationId },
+			};
+
+			using SchoolDbContext db = new();
+			db.AddRange(teachers);
+			db.SaveChanges();
 		}
 
 		static void ReadEducationAndStudents(string educationName) {
 			using SchoolDbContext db = new();
 
 			Education education = db.Education
-				.Include(x => x.Students)
+				.Include(s => s.Students)
+				.Include(t => t.Teachers)
 				.FirstOrDefault(e => e.Name == $"{educationName}");
 
 			if (education != null) {
 				Console.WriteLine($"Education:\nID: {education.Id}\nName: {education.Name}\n");
-				
-				foreach (Student student in education.Students) {
-                    Console.WriteLine($"Student id: {student.Id}\nName: {student.Name}\n");
+                Console.WriteLine("Teacher(s):");
+                foreach (Teacher teacher in education.Teachers) {
+					Console.WriteLine($"Id: {teacher.Id}\nName: {teacher.Name}\n");
+				}
+
+                Console.WriteLine("Student(s):");
+                foreach (Student student in education.Students) {
+                    Console.WriteLine($"\nStudent id: {student.Id}\nName: {student.Name}");
                 }
 			}
 		}

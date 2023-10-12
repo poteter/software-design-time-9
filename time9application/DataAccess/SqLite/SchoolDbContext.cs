@@ -12,6 +12,7 @@ namespace time9application.DataAccess.SqLite
     {
         public DbSet<Student> Student => Set<Student>();
         public DbSet<Education> Education => Set<Education>();
+        public DbSet<Teacher> Teacher => Set<Teacher>();
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             optionsBuilder.UseSqlite(@"Data Source = Resources\School.db");
