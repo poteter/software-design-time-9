@@ -9,15 +9,15 @@ namespace time9application {
 			// AddStudents(educationId);
 			// WriteEducationsToTerminal();
 			// ReadAllStudentNames();
-			ReadEducationAndStudents();
+			ReadEducationAndStudents("Data Science");
 		}
 
-		static void ReadEducationAndStudents() {
+		static void ReadEducationAndStudents(string educationName) {
 			using SchoolDbContext db = new();
 
 			Education education = db.Education
 				.Include(x => x.Students)
-				.FirstOrDefault(e => e.Name == "Data Science");
+				.FirstOrDefault(e => e.Name == $"{educationName}");
 
 			if (education != null) {
 				Console.WriteLine($"Education:\nID: {education.Id}\nName: {education.Name}\n");
